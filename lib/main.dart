@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rx_app/provider.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(
+    Provider(
+      child: MyApp(),
+  )
+);
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -25,7 +30,8 @@ class MyHomePage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    // 1. bloc
+    final bloc = Provider.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -34,14 +40,21 @@ class MyHomePage extends StatelessWidget{
         padding: const EdgeInsets.all(8.0),
         child: Form(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              TextFormField(),
-              TextFormField(),
+              TextField(
+                onChanged: (value) {
+                  bloc.setId(value);
+                },
+              ),
+              TextField(
+                obscureText: true,
+                onChanged: (value) {
+                  bloc.setPwd(value);
+                },
+              ),
               RaisedButton(
                 child: Text('로그인'),
-                onPressed: () {
-
-                },
               )
             ],
           ),
