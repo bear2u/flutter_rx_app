@@ -7,11 +7,23 @@ class Bloc {
   final _submit = PublishSubject<bool>();
 
   // Output
-  get id => _id.stream;
-  get pwd => _pwd.stream;
+  Observable<String> get id => _id.stream;
+  Observable<String> get pwd => _pwd.stream;
   get submit => _submit.stream;
 
-  setId(String txt) => _id.sink.add(txt);
+  Bloc() {
+    Observable.combineLatest2(id,pwd, (String id, String pwd)  {
+          print('id => $id, pwd => $pwd');
+          return id.length > 0 && pwd.length > 0;
+        })
+        .doOnData((data) => print(data))
+        .pipe(submit);
+  }
+
+  setId(String txt) {
+    print(txt);
+    _id.sink.add(txt);
+  }
   setPwd(String txt) => _pwd.sink.add(txt);
 
   dispose() {

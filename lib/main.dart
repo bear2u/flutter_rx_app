@@ -53,8 +53,15 @@ class MyHomePage extends StatelessWidget{
                   bloc.setPwd(value);
                 },
               ),
-              RaisedButton(
-                child: Text('로그인'),
+              StreamBuilder<bool>(
+                stream: bloc.submit,
+                builder: (context, snapshot) {
+                  final isEnable = snapshot.data ?? false;
+                  return RaisedButton(
+                    child: Text('로그인'),
+                    onPressed: isEnable ? () {} : null,
+                  );
+                }
               )
             ],
           ),
