@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:rxdart/rxdart.dart';
 
 class Bloc {
@@ -11,13 +13,16 @@ class Bloc {
   Observable<String> get pwd => _pwd.stream;
   get submit => _submit.stream;
 
+  StreamSubscription ss;
+
   Bloc() {
-    Observable.combineLatest2(id,pwd, (String id, String pwd)  {
+    ss = Observable.combineLatest2(id,pwd, (String id, String pwd)  {
           print('id => $id, pwd => $pwd');
           return id.length > 0 && pwd.length > 0;
         })
         .doOnData((data) => print(data))
-        .pipe(submit);
+        .listen((enable) => _submit.sink.add(enable));
+//        .pipe(submit);
   }
 
   setId(String txt) {
@@ -26,9 +31,11 @@ class Bloc {
   }
   setPwd(String txt) => _pwd.sink.add(txt);
 
-  dispose() {
+  dispose() async {
     _id.close();
     _pwd.close();
     _submit.close();
+
+    await ss.cancel();
   }
 }
